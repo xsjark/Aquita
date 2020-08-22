@@ -1,0 +1,7 @@
+dark orange #DD6930
+light orange #D17437
+dark black #303030
+light black #434343
+off white #FAFAF
+white #FFFFFF
+blue #097DED
