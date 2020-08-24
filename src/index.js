@@ -5,6 +5,7 @@ const express = require('express');
 const itemRouter = require('./routes/itemRoutes.js');
 const bodyParser = require('body-parser');
 const itemModel = require('./models/item');
+const saleModel = require('./models/sale');
 var methodOverride = require('method-override')
 var dotenv = require('dotenv');
 
@@ -40,11 +41,31 @@ app.use(itemRouter);
 app.listen(3000, () => { console.log('Server is running...') });
 
 // Consider moving!!
-app.get('/sales', async (req, res) => {
-	  const items = await itemModel.find({});
+app.post('/sale', async (req, res) => {
+  const item = new saleModel({
+		item: req.body.item.split(",")[1],
+		product_id: req.body.item.split(",")[0],
+		quantity: req.body.quantity,
+		comments: req.body.comments
+	});
+	const subtract_from_inventory = await itemModel.findOneAndUpdate({_id: req.body.item.split(",")[0]}, {$inc : { quantity: - req.body.quantity} })
 
   try {
-    res.render('sales.ejs', {items: items});
+    await item.save();
+		await subtract_from_inventory.save();
+    res.redirect('/sales');
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+app.get('/sales', async (req, res) => {
+	  const sales = await saleModel.find({});
+	  const items = await itemModel.find({});
+
+
+  try {
+    res.render('sales.ejs', {sales: sales, items: items});
   } catch (err) {
     res.status(500).send(err);
   }
