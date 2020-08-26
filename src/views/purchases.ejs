@@ -50,9 +50,9 @@
                <!-- Collect the nav links, forms, and other content for toggling -->
                <div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
                   <ul class="nav navbar-nav">
-                     <li class="active"><a href="#">Inventory <span class="sr-only">(current)</span></a></li>
+                     <li><a href="http://localhost:3000/">Inventory</a></li>
                      <li><a href="http://localhost:3000/sales">Sales</a></li>
-										 <li><a href="http://localhost:3000/purchases">Purchases</a></li>
+										 <li class="active"><a href="#">Purchases<span class="sr-only">(current)</span></a></li>
                      <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Options <span class="caret"></span></a>
                         <ul class="dropdown-menu">
@@ -69,63 +69,31 @@
                </div>
             </div>
          </nav>
-         <!-- Item table -->
+         <!-- Sales table -->
          <div class="container-fluid">
             <table class="table table-sm table-striped table-bordered"
                id="item_table" >
                <thead>
                   <tr>
-                     <th>Product ID</th>
-                     <th>Name</th>
-                     <th>Price</th>
+                     <th>Sale ID</th>
+                     <th>Time</th>
+                     <th>Product Purchased (Product ID)</th>
                      <th>Quantity</th>
-                     <th>Description</th>
+                     <th>Comments</th>
                      <th>Actions</th>
                   </tr>
                </thead>
                <tbody>
-                  <% for(var i = 0; i < items.length; i++) {%>
-                  <tr data-id="<%= items[i]._id %>">
-                     <td><%= items[i]._id %> </td>
-                     <td><%= items[i].name %> </td>
-                     <td><%= items[i].price.toFixed(2).padStart(5,'0')  %></td>
-                     <td><%= items[i].quantity %></td>
-                     <td><%= items[i].description %></td>
+                  <% for(var i = 0; i < purchases.length; i++) {%>
+                  <tr data-id="<%= purchases[i]._id %>">
+                     <td><%= purchases[i]._id %> </td>
+                     <td><%= purchases[i].date %> </td>
+                     <td><%= purchases[i].item %> (<%= purchases[i].product_id %>)</td>
+                     <td><%= purchases[i].quantity %></td>
+                     <td><%= purchases[i].comments %></td>
                      <td>
-                        <button type="button" class="btn btn-default btn-sm"><a  href="http://localhost:3000/item/<%=  items[i]._id%>" >Delete</a></button>
-                        <!-- Button trigger edit modal -->
-                        <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal<%= items[i]._id %>">
-                        Edit
-                        </button>
+                        <button type="button" class="btn btn-default btn-sm"><a  href="http://localhost:3000/purchase/<%= purchases[i].product_id+"/"+purchases[i]._id+"/"+purchases[i].quantity %>" >Delete</a></button>
                      </td>
-                     <!-- Modal for editing-->
-                     <div class="modal fade" id="myModal<%= items[i]._id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                        <div class="modal-dialog" role="document">
-                           <div class="modal-content">
-                              <div class="modal-header">
-                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                 <h4 class="modal-title" id="myModalLabel">Edit <%= items[i].name %> </h4>
-                              </div>
-                              <div class="modal-body">
-                                 <form class="form-inline" action="/item/<%= items[i]._id %>?_method=put" method="post">
-                                    <div class="form-group">
-                                       <input type="text" class="form-control" id="edit-name" value="<%= items[i].name %>" name="name">
-                                    </div>
-                                    <div class="form-group">
-                                       <input type="text" class="form-control" id="edit-price" value="<%= items[i].price %>" name="price">
-                                    </div>
-                                    <div class="form-group">
-                                       <input type="text" class="form-control" id="edit-quantity" value="<%= items[i].quantity %>" name="quantity">
-                                    </div>
-                                    <div class="form-group">
-                                       <input type="text" class="form-control" id="edit-description" value="<%= items[i].description %>" name="description">
-                                    </div>
-                                    <button type="submit" class="btn btn-default">Save</button>
-                                 </form>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
                   </tr>
                   <% } %>
                </tbody>
@@ -134,29 +102,31 @@
                </tfoot>
             </table>
          </div>
-         <!-- Modal for add new item -->
-         <div class="modal fade" id="additem-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+         <!-- Modal for add new sale -->
+         <div class="modal fade" id="addpurchase-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                <div class="modal-content">
                   <div class="modal-header">
                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                     <h4 class="modal-title">Add item</h4>
+                     <h4 class="modal-title">New purchase</h4>
                   </div>
                   <div class="modal-body">
-                     <form class="form" action="/item/" method="post">
+                     <form class="form" action="/purchase/" method="post">
                         <div class="form-group">
-                           <input type="text" class="form-control" id="add-name" placeholder="name" name="name">
+                           <select class="form-control" name="item" id="itmdrpdwn">
+                              <option selected>select item</option>
+                              <% for(var i = 0; i < items.length; i++) {%>
+                              <option value="<%= items[i]._id %>, <%= items[i].name%>,<%=items[i].quantity%>" required> <%= items[i].name %> </option>
+                              <% } %>
+                           </select>
                         </div>
                         <div class="form-group">
-                           <input type="text" class="form-control" id="add-price" placeholder="price" name="price">
+                           <input type="number" class="form-control" id="add-quantity" placeholder="quantity" name="quantity" min="1" required>
                         </div>
                         <div class="form-group">
-                           <input type="text" class="form-control" id="add-quantity" placeholder="quantity" name="quantity">
+                           <textarea class="form-control" rows="5" id="comments" placeholder="comments" name="comments"></textarea>
                         </div>
-                        <div class="form-group">
-                           <input type="text" class="form-control" id="add-description" placeholder="description" name="description">
-                        </div>
-                        <button type="submit" class="btn btn-default">Save</button>
+                        <button type="submit" class="btn btn-default">Save</button>		<button type="submit" class="btn btn-default">Continue</button>
                      </form>
                   </div>
                </div>
@@ -179,10 +149,10 @@
          		order: [[1, 'actions']],
                buttons: [
                 {
-         		   text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New item',						
+         		   text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New purchase',						
                  action: 
          				function ( e, dt, node, config ) {
-                        $("#additem-modal").modal("show");
+                        $("#addpurchase-modal").modal("show");
                   }
                 },				
               {

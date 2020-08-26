@@ -6,6 +6,7 @@ const itemRouter = require('./routes/itemRoutes.js');
 const bodyParser = require('body-parser');
 const itemModel = require('./models/item');
 const saleModel = require('./models/sale');
+const purchaseModel = require('./models/purchase');
 var methodOverride = require('method-override')
 var dotenv = require('dotenv');
 
@@ -41,6 +42,48 @@ app.use(itemRouter);
 app.listen(3000, () => { console.log('Server is running...') });
 
 // Consider moving!!
+app.get('/purchase/:itemid/:purchaseid/:quantity', async (req, res) => {
+	const purchase = await purchaseModel.findByIdAndDelete(req.params.purchaseid)
+	const quantity = await itemModel.findOneAndUpdate({_id: req.params.itemid}, {$inc : { quantity: - req.params.quantity} })
+  try {
+			await quantity.save()
+			res.redirect('/purchases')
+  } catch (err) {
+    res.status(500).send(err)
+  }
+
+});
+
+app.post('/purchase', async (req, res) => {
+  const purchase = new purchaseModel({
+		item: req.body.item.split(",")[1],
+		product_id: req.body.item.split(",")[0],
+		quantity: req.body.quantity,
+		comments: req.body.comments
+	});
+	const subtract_from_inventory = await itemModel.findOneAndUpdate({_id: req.body.item.split(",")[0]}, {$inc : { quantity:  req.body.quantity} })
+	
+  try {
+    await purchase.save();
+    res.redirect('/purchases');
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+app.get('/purchases', async (req, res) => {
+	  const purchases = await purchaseModel.find({});
+	  const items = await itemModel.find({});
+
+
+  try {
+    res.render('purchases.ejs', {purchases: purchases, items: items});
+  } catch (err) {
+    res.status(500).send(err);
+  }
+		
+});
+
 app.get('/sale/:itemid/:saleid/:quantity', async (req, res) => {
 	const sale = await saleModel.findByIdAndDelete(req.params.saleid)
 	const quantity = await itemModel.findOneAndUpdate({_id: req.params.itemid}, {$inc : { quantity: + req.params.quantity} })
