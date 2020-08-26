@@ -193,6 +193,7 @@
                 },				
               {
                   extend: 'pdf',
+								  title: 'Sales '+new Date(Date.now()),
                   footer: false,
                   exportOptions: {
                        columns: [1,2,3]
@@ -204,13 +205,15 @@
               },
               {
                   extend: 'excel',
+									title: 'Sales '+new Date(Date.now()),
                   footer: false,
                   exportOptions: {
                        columns: [1,2,3]
                    },
               },
          	 {
-         			extend: 'print',
+         				 extend: 'print',
+						 		 title: 'Sales '+new Date(Date.now()),
                  footer: false,
                  exportOptions: {
                       columns: [1,2,3]
