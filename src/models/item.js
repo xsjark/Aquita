@@ -18,6 +18,7 @@ const ItemSchema = new mongoose.Schema({
 	quantity: {
 			type: Number,
 			default: 0,
+		  min: 0,
 			validate(value) {
 				if (value < 0) throw new Error("Negative quantities aren't real.");
 			}
@@ -25,8 +26,7 @@ const ItemSchema = new mongoose.Schema({
 	  description: {
 			type: String,
 			trim: true,
-			lowercase: true,
-			unique: true
+			lowercase: true
   }
 });
 

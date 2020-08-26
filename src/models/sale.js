@@ -5,15 +5,13 @@ const SaleSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    lowercase: true,
-		unique: true
+    lowercase: true
   },  
 	product_id: {
     type: String,
     required: true,
     trim: true,
-    lowercase: true,
-		unique: true
+    lowercase: true
   },
 	quantity: {
 			type: Number,
@@ -25,8 +23,7 @@ const SaleSchema = new mongoose.Schema({
 	 comments: {
 			type: String,
 			trim: true,
-			lowercase: true,
-			unique: true
+			lowercase: true
   },
 	 date: { 
 		 type: Date, 

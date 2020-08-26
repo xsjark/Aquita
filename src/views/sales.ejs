@@ -21,6 +21,13 @@
     			// "sPaginationType": "bootstrap",
 				});
 			});
+			$(document).ready(function() {   
+				$('#itmdrpdwn').on('change',function() {
+					alert($(this).val());
+					console.log($(this).val());
+					$('#add-quantity').attr({"max": $(this).val().split(",")[2]})
+				});
+  })
     </script>
 		 <script>
 		$.ajax({
@@ -103,22 +110,24 @@
 								<td>
 									<button type="button" class="btn btn-default btn-sm"><a  href="http://localhost:3000/sale/<%= sales[i].product_id+"/"+sales[i]._id+"/"+sales[i].quantity %>" >Delete</a></button>
 									<!-- Button trigger edit modal -->
+									<!--
 									<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal<%= sales[i]._id %>">
   								Edit
 									</button>
 								</td>
+-->
 									<!-- Modal for editing-->
 									<div class="modal fade" id="myModal<%= sales[i]._id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 										<div class="modal-dialog" role="document">
 											<div class="modal-content">
 												<div class="modal-header">
 													<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-													<h4 class="modal-title" id="myModalLabel">Edit <%= sales[i].name %> </h4>
+													<h4 class="modal-title" id="myModalLabel">Edit <%= sales[i].item %> </h4>
 												</div>
 												<div class="modal-body">
-													<form class="form-inline" action="/item/<%= sales[i]._id %>?_method=put" method="post">
+													<form class="form-inline" action="/sale/<%= sales[i]._id %>?_method=put" method="post">
 														<div class="form-group">
-															<input type="text" class="form-control" id="edit-name" value="<%= sales[i].name %>" name="name">
+															<input type="text" class="form-control" id="edit-item" value="<%= sales[i].item %>" name="item">
 														</div>
 														<div class="form-group">
 															<input type="text" class="form-control" id="edit-quantity" value="<%= sales[i].quantity %>" name="quantity">
@@ -151,17 +160,17 @@
 												<div class="modal-body">
 													<form class="form" action="/sale/" method="post">
 														<div class="form-group">
-															<select class="form-control" name="item">
+															<select class="form-control" name="item" id="itmdrpdwn">
 																
 															<option selected>select item</option>
 															<% for(var i = 0; i < items.length; i++) {%>
-																<option value="<%= items[i]._id %>, <%= items[i].name %> "> <%= items[i].name %> </option>
+																<option value="<%= items[i]._id %>, <%= items[i].name%>,<%=items[i].quantity%>" required> <%= items[i].name %> </option>
 														  <% } %>
 
 														</select>
 														</div>
 														<div class="form-group">
-															<input type="text" class="form-control" id="add-quantity" placeholder="quantity" name="quantity">
+															<input type="number" class="form-control" id="add-quantity" placeholder="quantity" name="quantity" min="1" required>
 														</div>
 														<div class="form-group">
 															  <textarea class="form-control" rows="5" id="comments" placeholder="comments" name="comments"></textarea>
@@ -230,6 +239,10 @@
 
 } );
 		</script>
-		
+		<script>
+//.val( $('#add-quantity').val() ).change(); // for pre-selection trigger
+
+});    
+		</script>
   </body>
 </html> 

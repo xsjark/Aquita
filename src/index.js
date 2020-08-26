@@ -63,10 +63,9 @@ app.post('/sale', async (req, res) => {
 		comments: req.body.comments
 	});
 	const subtract_from_inventory = await itemModel.findOneAndUpdate({_id: req.body.item.split(",")[0]}, {$inc : { quantity: - req.body.quantity} })
-
+	
   try {
     await item.save();
-		await subtract_from_inventory.save();
     res.redirect('/sales');
   } catch (err) {
     res.status(500).send(err);
