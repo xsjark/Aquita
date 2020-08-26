@@ -41,6 +41,20 @@ app.use(itemRouter);
 app.listen(3000, () => { console.log('Server is running...') });
 
 // Consider moving!!
+app.get('/sale/:itemid/:saleid/:quantity', async (req, res) => {
+	const sale = await saleModel.findByIdAndDelete(req.params.saleid)
+	const quantity = await itemModel.findOneAndUpdate({_id: req.params.itemid}, {$inc : { quantity: + req.params.quantity} })
+  try {
+				await quantity.save()
+
+    if (!sale) res.status(404).send("No sale found")
+			res.redirect('/sales')
+  } catch (err) {
+    res.status(500).send(err)
+  }
+
+});
+
 app.post('/sale', async (req, res) => {
   const item = new saleModel({
 		item: req.body.item.split(",")[1],

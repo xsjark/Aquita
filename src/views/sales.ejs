@@ -101,7 +101,7 @@
 								<td><%= sales[i].comments %></td>
 
 								<td>
-									<button type="button" class="btn btn-default btn-sm"><a  href="http://localhost:3000/item/<%=  sales[i]._id%>" >Delete</a></button>
+									<button type="button" class="btn btn-default btn-sm"><a  href="http://localhost:3000/sale/<%= sales[i].product_id+"/"+sales[i]._id+"/"+sales[i].quantity %>" >Delete</a></button>
 									<!-- Button trigger edit modal -->
 									<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal<%= sales[i]._id %>">
   								Edit
