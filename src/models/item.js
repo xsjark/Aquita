@@ -2,19 +2,10 @@ const mongoose = require('mongoose');
 
 const ItemSchema = new mongoose.Schema({
 	code: {
-		type: Number,
-		default: 0,
-		validate(value) {
-			if (value < 0) throw new Error("Negative codes aren't real.");
-		},
-		unique: true
+		type: String,
 	},
 	as400_code: {
-		type: Number,
-		default: 0,
-		validate(value) {
-			if (value < 0) throw new Error("Negative codes aren't real.");
-		},
+		type: String,
 	},
 	name: {
 		type: String,
@@ -40,10 +31,6 @@ const ItemSchema = new mongoose.Schema({
 		trim: true,
 		lowercase: true
 	},
-	current_month: {
-		type: Number,
-		default: 1000,
-	},
 	expiration: {
 		type: String,
 	},
@@ -57,6 +44,12 @@ const ItemSchema = new mongoose.Schema({
 });
 
 ItemSchema.virtual('total_sales', {
+    ref: 'Sale',
+    localField: '_id',
+    foreignField: 'product_id',
+    justOne: false // set true for one-to-one relationship
+})
+ItemSchema.virtual('today_sales', {
     ref: 'Sale',
     localField: '_id',
     foreignField: 'product_id',

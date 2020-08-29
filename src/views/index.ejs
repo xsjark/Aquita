@@ -79,17 +79,14 @@
 				<thead>
 					<tr>
 						<th>Nº Secuencial</th>
-						<th>Nombre genérico</th>
 						<th>AS400</th>
+						<th>Nombre genérico</th>
 						<th>Unidad de medida</th>
 						<th>Cantidad</th>
 						<th>Lote</th>
 						<th>Caducidad</th>
 						<th>Notas</th>
 						<th>Total</th>
-						<th>Total(D)</th>
-						<th>Total(M)</th>
-						<th>Total(A)</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -105,9 +102,6 @@
 						<td><%= items[i].expiration %></td>
 						<td><%= items[i].description %></td>
 						<td><%= items[i].total_sales.reduce(function(sum, d) {return sum + d.quantity;}, 0); %></td>
-						<td><%= current_day %></td>
-						<td><%= current_month %></td>
-						<td><%= current_year %></td>
 						<td>
 							<button type="button" class="btn btn-default btn-sm"><a href="http://localhost:3000/item/<%=  items[i]._id%>">Delete</a></button>
 							<!-- Button trigger edit modal -->
