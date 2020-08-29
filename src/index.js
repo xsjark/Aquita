@@ -163,9 +163,49 @@ app.get('/sales', async (req, res) => {
 
 });
 
+// First day of the week (Monday)
+function startOfWeek(date)
+  {
+    var diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1);
+  
+    return new Date(date.setDate(diff));
+ 
+  }
+
+// Last day of the week (Sunday)
+function endOfWeek(date)
+  {
+     
+    var lastday = date.getDate() - (date.getDay() - 1) + 6;
+    return new Date(date.setDate(lastday));
+ 
+  }
+
+// First day of the month
+function startOfMonth(date)
+  {
+     
+   return new Date(date.getFullYear(), date.getMonth(), 1);
+ 
+  }
+
+// Last day of the month
+function endOfMonth(date)
+  {
+     
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+ 
+  }
 // Render items view and get items data
 app.get('/', async (req, res) => {
+	
+	const items = await itemModel.find({}).populate("total_sales").populate("total_purchases");
 
+	var start_week = startOfWeek(new Date())
+	var end_week = endOfWeek(new Date())
+	var start_month = startOfMonth(new Date())
+	var end_month = endOfMonth(new Date())
+	
 	var d = new Date(),
 		hour = d.getHours(),
 		min = d.getMinutes(),
@@ -173,19 +213,6 @@ app.get('/', async (req, res) => {
 		year = d.getFullYear(),
 		sec = d.getSeconds(),
 		day = d.getDate();
-
-	const items = await itemModel.find({}).populate("total_sales");
-
-	const salesgrp = await saleModel.aggregate([
-  {
-    $group: {
-      // Each `_id` must be unique, so if there are multiple
-      // documents with the same age, MongoDB will increment `count`.
-      _id: '$item',
-      count: { $sum: 1 }
-    }
-  }
-]);
 	
 	const current_day = await saleModel.find({
 		"createdAt": {
@@ -208,7 +235,7 @@ app.get('/', async (req, res) => {
 		}
 	});
 	try {
-		console.log("Test here")
+		console.log(end_month)
 		res.render('index.ejs', {
 			items: items,
 			current_month: current_month.reduce(function (sum, d) {
@@ -220,6 +247,10 @@ app.get('/', async (req, res) => {
 			current_day: current_day.reduce(function (sum, d) {
 				return sum + d.quantity;
 			}, 0),
+			start_week: start_week,
+			end_week: end_week,
+			start_month: start_month,
+			end_month: end_month
 		});
 	} catch (err) {
 		res.status(500).send(err);

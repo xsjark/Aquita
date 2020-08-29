@@ -49,8 +49,8 @@ ItemSchema.virtual('total_sales', {
     foreignField: 'product_id',
     justOne: false // set true for one-to-one relationship
 })
-ItemSchema.virtual('today_sales', {
-    ref: 'Sale',
+ItemSchema.virtual('total_purchases', {
+    ref: 'Purchase',
     localField: '_id',
     foreignField: 'product_id',
     justOne: false // set true for one-to-one relationship

@@ -80,14 +80,14 @@
 					<tr>
 						<th>Nº Secuencial</th>
 						<th>AS400</th>
+						<th>Lote</th>
 						<th>Nombre genérico</th>
 						<th>Unidad de medida</th>
-						<th>Cantidad</th>
-						<th>Lote</th>
 						<th>Caducidad</th>
-						<th>Notas</th>
-						<th>Today</th>
-						<th>Total</th>
+						<th>Cantidad</th>
+						<th>Hoy</th>
+						<th>Semana</th>
+						<th>Mes</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -96,16 +96,32 @@
 					<tr data-id="<%= items[i]._id %>">
 						<td><%= items[i].code %></td>
 						<td><%= items[i].as400_code %></td>
+						<td><%= items[i].lot %></td>
 						<td><%= items[i].name %></td>
 						<td><%= items[i].units %></td>
-						<td><%= items[i].quantity %></td>
-						<td><%= items[i].lot %></td>
 						<td><%= items[i].expiration %></td>
-						<td><%= items[i].description %></td>
-						<td><%= items[i].total_sales.reduce(function(sum, d) {return sum + d.quantity;}, 0); %></td>
+						<td><%= items[i].quantity %></td>
+
 						<td><%= items[i].total_sales.filter(d => {var date = new Date(d.createdAt).getTime();
                              return (new Date().setHours(0, 0, 0, 0) < date && date < new Date().setHours(23, 59, 0, 0) );
-                            }).reduce(function(sum, d) {return sum + d.quantity;}, 0);  %></td>
+                            }).reduce(function(sum, d) {return sum + d.quantity;}, 0);  %> (<%= items[i].total_purchases.filter(d => {var date = new Date(d.createdAt).getTime();
+                             return (new Date().setHours(0, 0, 0, 0) < date && date < new Date().setHours(23, 59, 0, 0) );
+                            }).reduce(function(sum, d) {return sum + d.quantity;}, 0); %>) </td>
+						
+
+						<td><%= items[i].total_sales.filter(d => {var date = new Date(d.createdAt).getTime();
+                             return (start_week < date && date < end_week );
+                            }).reduce(function(sum, d) {return sum + d.quantity;}, 0);  %> (<%= items[i].total_purchases.filter(d => {var date = new Date(d.createdAt).getTime();
+                             return (start_week < date && date < end_week );
+                            }).reduce(function(sum, d) {return sum + d.quantity;}, 0); %>)</td>
+
+						<td><%= items[i].total_sales.filter(d => {var date = new Date(d.createdAt).getTime();
+                             return (start_week < date && date < end_week );
+                            }).reduce(function(sum, d) {return sum + d.quantity;}, 0);  %> (<%= items[i].total_purchases.filter(d => {var date = new Date(d.createdAt).getTime();
+                             return (start_month < date && date < end_week );
+                            }).reduce(function(sum, d) {return sum + d.quantity;}, 0); %>)</td>
+
+
 						<td>
 							<button type="button" class="btn btn-default btn-sm"><a href="http://localhost:3000/item/<%=  items[i]._id%>">Delete</a></button>
 							<!-- Button trigger edit modal -->
@@ -227,10 +243,10 @@
 					"<'row'<'col-sm-5'i><'col-sm-7'p>>",
 				"columnDefs": [{
 					"orderable": false,
-					"targets": [8, 10]
+					"targets": -1
 				}, {
 					"width": "10%",
-					"targets": [1, 10]
+					"targets":  -1
 				}],
 				order: [
 					[1, 'actions']
@@ -246,7 +262,7 @@
 						title: 'Inventory ' + new Date(Date.now()),
 						footer: false,
 						exportOptions: {
-							columns: [1, 2, 3, 4, 5, 6, 7]
+							columns: [0, 3, 7 , 8, 9]
 						},
 						customize: function(doc) {
 							doc.content[1].table.widths =
@@ -258,7 +274,7 @@
 						title: 'Inventory ' + new Date(Date.now()),
 						footer: false,
 						exportOptions: {
-							columns: [1, 2, 3, 4, 5, 6, 7]
+							columns: [0, 3, 7 , 8, 9]
 						},
 					},
 					{
@@ -266,7 +282,7 @@
 						title: 'Inventory ' + new Date(Date.now()),
 						footer: false,
 						exportOptions: {
-							columns: [1, 2, 3, 4, 5, 6, 7]
+							columns: [0, 3, 7 , 8, 9]
 						}
 					}
 				]
