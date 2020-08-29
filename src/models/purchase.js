@@ -28,6 +28,8 @@ const PurchaseSchema = new mongoose.Schema({
 	 date: { 
 		 type: Date, 
 		 default: Date.now },
+}, {
+	timestamps: true
 });
 
 const Purchase = mongoose.model("Purchase", PurchaseSchema);
