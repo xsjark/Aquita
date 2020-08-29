@@ -174,7 +174,7 @@ app.get('/', async (req, res) => {
 		sec = d.getSeconds(),
 		day = d.getDate();
 
-	const items = await itemModel.find({});
+	const items = await itemModel.find({}).populate("total_sales");
 
 	const salesgrp = await saleModel.aggregate([
   {
@@ -186,6 +186,13 @@ app.get('/', async (req, res) => {
     }
   }
 ]);
+	
+	const current_day = await saleModel.find({
+		"createdAt": {
+			$lt: new Date(),
+			$gt: new Date(year,month,day,"00")
+		}
+	});
 	
 	const current_month = await saleModel.find({
 		"createdAt": {
@@ -201,7 +208,7 @@ app.get('/', async (req, res) => {
 		}
 	});
 	try {
-		console.log(salesgrp)
+		console.log("Test here")
 		res.render('index.ejs', {
 			items: items,
 			current_month: current_month.reduce(function (sum, d) {
@@ -210,7 +217,9 @@ app.get('/', async (req, res) => {
 			current_year: current_year.reduce(function (sum, d) {
 				return sum + d.quantity;
 			}, 0),
-			current_day: "total sales for today"
+			current_day: current_day.reduce(function (sum, d) {
+				return sum + d.quantity;
+			}, 0),
 		});
 	} catch (err) {
 		res.status(500).send(err);

@@ -67,11 +67,11 @@
 								<li><a href="#">Preferences</a></li>
 							</ul>
 						</li>
-						
+
 					</ul>
 				</div>
 			</div>
-			
+
 		</nav>
 		<!-- Item table -->
 		<div class="container-fluid">
@@ -86,6 +86,7 @@
 						<th>Lote</th>
 						<th>Caducidad</th>
 						<th>Notas</th>
+						<th>Total</th>
 						<th>Total(D)</th>
 						<th>Total(M)</th>
 						<th>Total(A)</th>
@@ -103,6 +104,7 @@
 						<td><%= items[i].lot %></td>
 						<td><%= items[i].expiration %></td>
 						<td><%= items[i].description %></td>
+						<td><%= items[i].total_sales.reduce(function(sum, d) {return sum + d.quantity;}, 0); %></td>
 						<td><%= current_day %></td>
 						<td><%= current_month %></td>
 						<td><%= current_year %></td>

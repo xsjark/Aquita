@@ -51,10 +51,18 @@ const ItemSchema = new mongoose.Schema({
 		type: String,
 		trim: true,
 		lowercase: true
-	}
+	},
 }, {
 	timestamps: true
 });
+
+ItemSchema.virtual('total_sales', {
+    ref: 'Sale',
+    localField: '_id',
+    foreignField: 'product_id',
+    justOne: false // set true for one-to-one relationship
+})
+
 
 const Item = mongoose.model("Item", ItemSchema);
 module.exports = Item;
