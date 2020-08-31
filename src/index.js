@@ -92,7 +92,7 @@ app.post('/purchase', async (req, res) => {
 
 // Renders purchase view and gets data for purchases table
 app.get('/purchases', async (req, res) => {
-	const purchases = await purchaseModel.find({});
+	const purchases = await purchaseModel.find({}).populate("code");
 	const items = await itemModel.find({});
 	try {
 		res.render('purchases.ejs', {
@@ -150,7 +150,7 @@ app.post('/sale', async (req, res) => {
 
 //Render sales view and get sales data
 app.get('/sales', async (req, res) => {
-	const sales = await saleModel.find({});
+	const sales = await saleModel.find({}).populate("code");
 	const items = await itemModel.find({});
 	try {
 		res.render('sales.ejs', {
@@ -164,89 +164,71 @@ app.get('/sales', async (req, res) => {
 });
 
 // First day of the week (Monday)
-function startOfWeek(date)
-  {
-    var diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1);
-  
-    return new Date(date.setDate(diff));
- 
-  }
+function startOfWeek(date) {
+	var diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1);
+
+	return new Date(date.setDate(diff));
+
+}
 
 // Last day of the week (Sunday)
-function endOfWeek(date)
-  {
-     
-    var lastday = date.getDate() - (date.getDay() - 1) + 6;
-    return new Date(date.setDate(lastday));
- 
-  }
+function endOfWeek(date) {
+
+	var lastday = date.getDate() - (date.getDay() - 1) + 6;
+	return new Date(date.setDate(lastday));
+
+}
 
 // First day of the month
-function startOfMonth(date)
-  {
-     
-   return new Date(date.getFullYear(), date.getMonth(), 1);
- 
-  }
+function startOfMonth(date) {
+
+	return new Date(date.getFullYear(), date.getMonth(), 1);
+
+}
 
 // Last day of the month
-function endOfMonth(date)
-  {
-     
-  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
- 
-  }
+function endOfMonth(date) {
+
+	return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+}
 // Render items view and get items data
 app.get('/', async (req, res) => {
-	
+
 	const items = await itemModel.find({}).populate("total_sales").populate("total_purchases");
 
+	const total_sales_month = await saleModel.aggregate(
+    [
+			{
+				$group: {
+					_id: {
+						$dateToString: {
+							format: "%Y-%m-%d",
+							date: "$date"
+						}
+					},
+					totalUnitsSold: {
+						$sum: "$quantity"
+					}
+				}
+      }
+    ],
+
+		function (err, result) {
+			if (err) {
+				res.send(err);
+			}
+		}
+	);
 	var start_week = startOfWeek(new Date())
 	var end_week = endOfWeek(new Date())
 	var start_month = startOfMonth(new Date())
 	var end_month = endOfMonth(new Date())
-	
-	var d = new Date(),
-		hour = d.getHours(),
-		min = d.getMinutes(),
-		month = d.getMonth(),
-		year = d.getFullYear(),
-		sec = d.getSeconds(),
-		day = d.getDate();
-	
-	const current_day = await saleModel.find({
-		"createdAt": {
-			$lt: new Date(),
-			$gt: new Date(year,month,day,"00")
-		}
-	});
-	
-	const current_month = await saleModel.find({
-		"createdAt": {
-			$lt: new Date(),
-			$gt: new Date("01/" + month + "/" + year + " " + hour + ":" + min)
-		}
-	});
-	
-	const current_year = await saleModel.find({
-		"createdAt": {
-			$lt: new Date(),
-			$gt: new Date("01/01/" + year)
-		}
-	});
+
 	try {
-		console.log(end_month)
+		console.log()
 		res.render('index.ejs', {
 			items: items,
-			current_month: current_month.reduce(function (sum, d) {
-				return sum + d.quantity;
-			}, 0),
-			current_year: current_year.reduce(function (sum, d) {
-				return sum + d.quantity;
-			}, 0),
-			current_day: current_day.reduce(function (sum, d) {
-				return sum + d.quantity;
-			}, 0),
 			start_week: start_week,
 			end_week: end_week,
 			start_month: start_month,

@@ -60,21 +60,9 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li><a href="http://localhost:3000/">Inventory</a></li>
-						<li class="active"><a href="#">Sales<span class="sr-only">(current)</span></a></li>
-						<li><a href="http://localhost:3000/purchases">Purchases</a></li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Options <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="#">Option</a></li>
-								<li><a href="#">Another option</a></li>
-								<li><a href="#">Something else here</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#">Language</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#">Preferences</a></li>
-							</ul>
-						</li>
+						<li><a href="http://localhost:3000/">Inventorio</a></li>
+						<li class="active"><a href="#">Egresos<span class="sr-only">(current)</span></a></li>
+						<li><a href="http://localhost:3000/purchases">Ingresos</a></li>
 					</ul>
 				</div>
 			</div>
@@ -84,24 +72,28 @@
 			<table class="table table-sm table-striped table-bordered" id="item_table">
 				<thead>
 					<tr>
-						<th>Sale ID</th>
-						<th>Time</th>
-						<th>Product Sold (Product ID)</th>
-						<th>Quantity</th>
-						<th>Comments</th>
-						<th>Actions</th>
+						<th>Nº Secuencial</th>
+						<th>AS400</th>
+						<th>Lote</th>
+						<th>Fecha</th>
+						<th>Nombre genérico</th>
+						<th>Cantidad</th>
+						<th>Notas</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
 					<% for(var i = 0; i < sales.length; i++) {%>
 					<tr data-id="<%= sales[i]._id %>">
-						<td><%= sales[i]._id %> </td>
+						<td><%= sales[i].code["code"] %> </td>
+						<td><%= sales[i].code["as400_code"] %> </td>
+						<td><%= sales[i].code["lot"] %> </td>
 						<td><%= sales[i].date %> </td>
-						<td><%= sales[i].item %> (<%= sales[i].product_id %>)</td>
+						<td><%= sales[i].item %> </td>
 						<td><%= sales[i].quantity %></td>
 						<td><%= sales[i].comments %></td>
 						<td>
-							<button type="button" class="btn btn-default btn-sm"><a href="http://localhost:3000/sale/<%= sales[i].product_id+"/"+sales[i]._id+"/"+sales[i].quantity %>">Delete</a></button>
+							<button type="button" class="btn btn-default btn-sm"><a href="http://localhost:3000/sale/<%= sales[i].product_id+"/"+sales[i]._id+"/"+sales[i].quantity %>">Eliminar</a></button>
 							<!-- Button trigger edit modal (Not sure if to impleme) -->
 							<!--
                            <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal<%= sales[i]._id %>">
@@ -184,23 +176,23 @@
 					"<'row'<'col-sm-5'i><'col-sm-7'p>>",
 				"columnDefs": [{
 					"orderable": false,
-					"targets": [0, 5]
+					"targets": [-2, -1]
 				}],
 				order: [
 					[1, 'actions']
 				],
 				buttons: [{
-						text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New sale',
+						text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
 						action: function(e, dt, node, config) {
 							$("#additem-modal").modal("show");
 						}
 					},
 					{
 						extend: 'pdf',
-						title: 'Sales ' + new Date(Date.now()),
+						title: 'Egresos ' + new Date(Date.now()),
 						footer: false,
 						exportOptions: {
-							columns: [1, 2, 3]
+							columns: [0, 1, 2, 3, 4, 5]
 						},
 						customize: function(doc) {
 							doc.content[1].table.widths =
@@ -209,18 +201,18 @@
 					},
 					{
 						extend: 'excel',
-						title: 'Sales ' + new Date(Date.now()),
+						title: 'Egresos ' + new Date(Date.now()),
 						footer: false,
 						exportOptions: {
-							columns: [1, 2, 3]
+							columns: [0, 1, 2, 3, 4, 5]
 						},
 					},
 					{
 						extend: 'print',
-						title: 'Sales ' + new Date(Date.now()),
+						title: 'Egresos ' + new Date(Date.now()),
 						footer: false,
 						exportOptions: {
-							columns: [1, 2, 3]
+							columns: [0, 1, 2, 3, 4, 5]
 						}
 					}
 				]

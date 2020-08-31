@@ -5,13 +5,11 @@ const PurchaseSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    lowercase: true
   },  
 	product_id: {
     type: String,
     required: true,
     trim: true,
-    lowercase: true
   },
 	quantity: {
 			type: Number,
@@ -31,6 +29,13 @@ const PurchaseSchema = new mongoose.Schema({
 }, {
 	timestamps: true
 });
+
+PurchaseSchema.virtual('code', {
+    ref: 'Item',
+    localField: 'product_id',
+    foreignField: '_id',
+    justOne: true // set true for one-to-one relationship
+})
 
 const Purchase = mongoose.model("Purchase", PurchaseSchema);
 module.exports = Purchase;

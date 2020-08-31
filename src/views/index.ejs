@@ -52,21 +52,9 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">Inventory <span class="sr-only">(current)</span></a></li>
-						<li><a href="http://localhost:3000/sales">Sales</a></li>
-						<li><a href="http://localhost:3000/purchases">Purchases</a></li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Options <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="#">Option</a></li>
-								<li><a href="#">Another option</a></li>
-								<li><a href="#">Something else here</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#">Language</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#">Preferences</a></li>
-							</ul>
-						</li>
+						<li class="active"><a href="#">Inventorio <span class="sr-only">(current)</span></a></li>
+						<li><a href="http://localhost:3000/sales">Egresos</a></li>
+						<li><a href="http://localhost:3000/purchases">Ingresos</a></li>
 
 					</ul>
 				</div>
@@ -107,7 +95,7 @@
                             }).reduce(function(sum, d) {return sum + d.quantity;}, 0);  %> (<%= items[i].total_purchases.filter(d => {var date = new Date(d.createdAt).getTime();
                              return (new Date().setHours(0, 0, 0, 0) < date && date < new Date().setHours(23, 59, 0, 0) );
                             }).reduce(function(sum, d) {return sum + d.quantity;}, 0); %>) </td>
-						
+
 
 						<td><%= items[i].total_sales.filter(d => {var date = new Date(d.createdAt).getTime();
                              return (start_week < date && date < end_week );
@@ -123,10 +111,10 @@
 
 
 						<td>
-							<button type="button" class="btn btn-default btn-sm"><a href="http://localhost:3000/item/<%=  items[i]._id%>">Delete</a></button>
+							<button type="button" class="btn btn-default btn-sm"><a href="http://localhost:3000/item/<%=  items[i]._id%>">Eliminar</a></button>
 							<!-- Button trigger edit modal -->
 							<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal<%= items[i]._id %>">
-								Edit
+								Editar
 							</button>
 						</td>
 						<!-- Modal for editing-->
@@ -245,24 +233,24 @@
 					"orderable": false,
 					"targets": -1
 				}, {
-					"width": "10%",
-					"targets":  -1
+					"width": "15%",
+					"targets": -1
 				}],
 				order: [
-					[1, 'actions']
+					[0, 'asc']
 				],
 				buttons: [{
-						text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New item',
+						text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
 						action: function(e, dt, node, config) {
 							$("#additem-modal").modal("show");
 						}
 					},
 					{
 						extend: 'pdf',
-						title: 'Inventory ' + new Date(Date.now()),
+						title: 'Inventorio ' + new Date(Date.now()),
 						footer: false,
 						exportOptions: {
-							columns: [0, 3, 7 , 8, 9]
+							columns: [0, 3, 7, 8, 9]
 						},
 						customize: function(doc) {
 							doc.content[1].table.widths =
@@ -271,18 +259,18 @@
 					},
 					{
 						extend: 'excel',
-						title: 'Inventory ' + new Date(Date.now()),
+						title: 'Inventorio ' + new Date(Date.now()),
 						footer: false,
 						exportOptions: {
-							columns: [0, 3, 7 , 8, 9]
+							columns: [0, 3, 7, 8, 9]
 						},
 					},
 					{
 						extend: 'print',
-						title: 'Inventory ' + new Date(Date.now()),
+						title: 'Inventorio ' + new Date(Date.now()),
 						footer: false,
 						exportOptions: {
-							columns: [0, 3, 7 , 8, 9]
+							columns: [0, 3, 7, 8, 9]
 						}
 					}
 				]

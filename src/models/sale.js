@@ -5,13 +5,11 @@ const SaleSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		trim: true,
-		lowercase: true
 	},
 	product_id: {
 		type: String,
 		required: true,
 		trim: true,
-		lowercase: true
 	},
 	quantity: {
 		type: Number,
@@ -33,5 +31,11 @@ const SaleSchema = new mongoose.Schema({
 	timestamps: true
 });
 
+SaleSchema.virtual('code', {
+    ref: 'Item',
+    localField: 'product_id',
+    foreignField: '_id',
+    justOne: true // set true for one-to-one relationship
+})
 const Sale = mongoose.model("Sale", SaleSchema);
 module.exports = Sale;
